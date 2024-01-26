@@ -1,20 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+//flkajslfkasf
 
 
 @TeleOp
 public class Startup extends LinearOpMode{
 
-    private DcMotor motor0;
-    private DcMotor motor1;
-    private DcMotor motor2;
-    private DcMotor motor3;
 
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -27,10 +25,16 @@ public class Startup extends LinearOpMode{
         float yR;
         float maxT;
         float minT;
-        DcMotor FR = hardwareMap.get(DcMotor.class, "motor0");
-        DcMotor FL = hardwareMap.get(DcMotor.class, "motor1");
-        DcMotor BR = hardwareMap.get(DcMotor.class, "motor2");
-        DcMotor BL = hardwareMap.get(DcMotor.class, "motor3");
+        DcMotor FR = hardwareMap.get(DcMotor.class, "motorFR");
+        DcMotor FL = hardwareMap.get(DcMotor.class, "motorFL");
+        DcMotor BR = hardwareMap.get(DcMotor.class, "motorBR");
+        DcMotor BL = hardwareMap.get(DcMotor.class, "motorBL");
+        DcMotor armLeft = hardwareMap.get(DcMotor.class, "motorAL");
+        Servo servo_r = hardwareMap.servo.get("servoDropperR");
+        Servo servo_l = hardwareMap.servo.get("servoDropperL");
+        Servo servo_d = hardwareMap.servo.get("servoDropperF");
+        DcMotor armRight = hardwareMap.get(DcMotor.class, "motorAR");
+        DcMotor feeder = hardwareMap.get(DcMotor.class, "motorFeeder");
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -45,8 +49,7 @@ public class Startup extends LinearOpMode{
         FL.setDirection(DcMotorSimple.Direction.REVERSE);
         BR.setDirection(DcMotorSimple.Direction.REVERSE);
         BL.setDirection(DcMotorSimple.Direction.REVERSE);
-        // FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        // FR.setMode(DcMotor.RunMode.RUN_WITH_ENCODER);
+        //servo_r.setDirection(Servo.Direction.REVERSE);
 
         while (opModeIsActive()) {
             // FR.setPower(1);
@@ -54,6 +57,12 @@ public class Startup extends LinearOpMode{
             y = 0-gamepad1.left_stick_y;
             xR = gamepad1.right_stick_x;
             yR = 0-gamepad1.right_stick_y;
+            boolean extendArm = gamepad1.right_bumper;
+//            boolean retractArm = gamepad1.left_bumper;
+            int extendPosition = armLeft.getCurrentPosition();
+            boolean flipped = false;
+//            servo_l.setPosition(0);
+//            servo_r.setPosition(0);
             maxT = 1f;
             minT = 0.01f;
 
@@ -62,6 +71,35 @@ public class Startup extends LinearOpMode{
             telemetry.addData("Right x: ", xR);
             telemetry.addData("Trigger: ", gamepad1.left_trigger);
             telemetry.update();
+
+            if (extendArm) {
+                feeder.setPower(1);
+            } else {
+                feeder.setPower(0);
+            }
+//            if (retractArm && extendPosition > 0) {
+//                armLeft.setPower(-1);
+//                armRight.setPower(1);
+//            } else {
+//                armLeft.setPower(0);
+//                armRight.setPower(0);
+//            }
+//            if (extendArm && extendPosition < 3080 && !retractArm) {
+//                armLeft.setPower(1);
+//                armRight.setPower(-1);
+//            } else {
+//                armLeft.setPower(0);
+//                armRight.setPower(0);
+//            }
+            if (gamepad1.a) {
+//                servo_l.setPosition(1);
+//                servo_r.setPosition(1);
+                servo_l.setPosition(0.5);
+                servo_r.setPosition(0.5);
+//                servo_d.setPosition(1);
+                flipped = true;
+            }
+
 
             // Move backwards
             if ((y <= -minT && y >= -maxT) && (x<=0.5 && x>=-0.5)){
@@ -150,9 +188,6 @@ public class Startup extends LinearOpMode{
                 BR.setPower(0);
                 BL.setPower(0);
             }
-            // if ((x >= 0.75 || x >=-0.75) && (y >= 0.75 || y >=-0.75)) {
-            //     FL.setPower(y*2);
-            // }
         }
     }
 
