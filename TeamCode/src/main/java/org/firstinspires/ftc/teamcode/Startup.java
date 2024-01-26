@@ -52,7 +52,6 @@ public class Startup extends LinearOpMode{
         //servo_r.setDirection(Servo.Direction.REVERSE);
 
         while (opModeIsActive()) {
-            // FR.setPower(1);
             x = gamepad1.left_stick_x;
             y = 0-gamepad1.left_stick_y;
             xR = gamepad1.right_stick_x;
